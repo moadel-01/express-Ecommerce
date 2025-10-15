@@ -5,7 +5,12 @@ const roleMiddleware = require("../middlewares/roleMiddleware");
 
 const usersRouter = express.Router();
 
-usersRouter.post("/", usersController.createUser);
+usersRouter.post(
+  "/createUser",
+  authMiddleware,
+  roleMiddleware("ADMIN"),
+  usersController.createUser
+);
 
 usersRouter.get(
   "/",
@@ -13,11 +18,11 @@ usersRouter.get(
   roleMiddleware("ADMIN"),
   usersController.getUsers
 );
-usersRouter.get("/:id", usersController.getSingleUser);
+usersRouter.get("/:id", authMiddleware, usersController.getSingleUser);
 
-usersRouter.delete("/:id", usersController.deleteUser);
+usersRouter.delete("/:id", authMiddleware, usersController.deleteUser);
 
-usersRouter.patch("/:id", usersController.updateUser);
+usersRouter.patch("/:id", authMiddleware, usersController.updateUser);
 
 usersRouter.post("/signUp", usersController.Register);
 usersRouter.post("/signIn", usersController.Login);

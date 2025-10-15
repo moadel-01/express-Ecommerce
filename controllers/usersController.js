@@ -31,7 +31,6 @@ async function createUser(req, res) {
 
     const user = await User.create({ ...value, password: hashedPassword });
 
-    // console.log(user._id);
     res.status(201).json({ message: "user created" });
   } catch (error) {
     res.status(500).json({ message: "internal server error" });
@@ -61,11 +60,22 @@ async function deleteUser(req, res) {
   const { id } = req.params;
 
   try {
-    const removedUser = await User.findByIdAndDelete(id);
+    const user_token = req.user;
 
-    if (!removedUser) {
+    const user = await User.findById(id);
+
+    if (!user) {
       return res.status(404).json({ message: "user not found!" });
     }
+
+    const condition = user._id.toString() != user_token.id;
+    if (condition && user_token.role != "ADMIN") {
+      return res
+        .status(403)
+        .json({ message: "you do not have the access to delete this user" });
+    }
+
+    const removedUser = await User.findByIdAndDelete(id);
 
     res.status(200).json({ message: "user deleted" });
   } catch (error) {
@@ -75,22 +85,35 @@ async function deleteUser(req, res) {
 
 async function updateUser(req, res) {
   const { id } = req.params;
-  const { error, value } = updateValidation.validate(req.body);
-
-  if (error) {
-    return res.status(400).json(error.details[0].message);
-  }
-
-  if (value.password) {
-    value.password = await bcrypt.hash(value.password, 10);
-  }
 
   try {
-    const updtdUser = await User.findByIdAndUpdate(id, value);
+    const user_token = req.user;
 
-    if (!updtdUser) {
+    const user = await User.findById(id);
+
+    if (!user) {
       return res.status(404).json({ message: "user not found" });
     }
+
+    if (user._id.toString() != user_token.id && user_token.role != "ADMIN") {
+      return res
+        .status(403)
+        .json({
+          message: "you do not have the access to update this user data",
+        });
+    }
+
+    const { error, value } = updateValidation.validate(req.body);
+
+    if (error) {
+      return res.status(400).json(error.details[0].message);
+    }
+
+    if (value.password) {
+      value.password = await bcrypt.hash(value.password, 10);
+    }
+
+    const updtdUser = await User.findByIdAndUpdate(id, value);
 
     res.status(200).json({ message: "user updated" });
   } catch (error) {

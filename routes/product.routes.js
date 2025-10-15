@@ -18,7 +18,9 @@ productRouter.post(
 );
 
 productRouter.get("/", productController.getAllProducts);
-productRouter.get("/:id", productController.getSingleProduct);
+productRouter.get("/search", productController.searchBar);
+productRouter.get("/categories/:category", productController.getProductsByCategory);
+productRouter.get("/:id", productController.getSingleProductWithReviews);
 
 productRouter.delete(
   "/:id",
