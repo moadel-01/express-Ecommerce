@@ -15,6 +15,10 @@ const port = process.env.PORT;
 const app = express();
 app.use(express.json());
 
+app.get("/", (req,res)=> {
+  res.send("Hello")
+})
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/users", usersRouter);
