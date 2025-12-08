@@ -68,8 +68,7 @@ async function deleteUser(req, res) {
       return res.status(404).json({ message: "user not found!" });
     }
 
-    const condition = user._id.toString() != user_token.id;
-    if (condition && user_token.role != "ADMIN") {
+    if (user._id.toString() != user_token.id && user_token.role != "ADMIN") {
       return res
         .status(403)
         .json({ message: "you do not have the access to delete this user" });

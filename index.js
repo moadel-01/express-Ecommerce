@@ -6,6 +6,8 @@ const { productRouter } = require("./routes/product.routes");
 const { upload } = require("./middlewares/uploadMiddleware");
 const { reviewRouter } = require("./routes/review.routes");
 const path = require("path");
+const { contactRouter } = require("./routes/contact.routes");
+const { orderRouter } = require("./routes/order.route");
 
 dotenv.config();
 const port = process.env.PORT;
@@ -21,6 +23,10 @@ app.use("/products", productRouter);
 
 app.use("/products", reviewRouter);
 
+app.use("/contact", contactRouter);
+
+app.use("/order", orderRouter)
+
 app.post("/test", upload.array("images"), (req, res) => {
   // const thumbnail = req.file.filename;
   res.send("success!!");
@@ -30,7 +36,7 @@ app.post("/test", upload.array("images"), (req, res) => {
 });
 
 // app.post("/test", upload.single("thumbnail"), (req, res) => {
-//   const thumbnail = req.file.filename;
+//   const thumbnail = req.file.filename;    
 //   res.send("success!!");
 //   console.log("this here:", thumbnail);
 // });

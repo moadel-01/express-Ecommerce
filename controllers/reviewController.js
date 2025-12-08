@@ -41,7 +41,7 @@ async function createReview(req, res) {
       allReviews.reduce((acc, cur) => acc + cur.rating, 0) / allReviews.length;
 
     const upd_prod = await Product.findByIdAndUpdate(prod_id, {
-      rating: rating,
+      rating: rating.toFixed(1),
     });
 
     res.status(201).json({ message: "review added", data: finReview });
@@ -79,13 +79,13 @@ async function deleteReview(req, res) {
   try {
     const product = await Product.findById(prod_id);
     if (!product) {
-      return res.status(400).json({ message: "product not found" });
+      return res.status(404).json({ message: "product not found" });
     }
     // console.log(product);
 
     const review = await Review.findById(rev_id);
     if (!review) {
-      return res.status(400).json({ message: "review not found" });
+      return res.status(404).json({ message: "review not found" });
     }
 
     if (req.user.id !== review.reviewer.id.toString()) {
@@ -102,7 +102,7 @@ async function deleteReview(req, res) {
       allReviews.reduce((acc, cur) => acc + cur.rating, 0) / allReviews.length;
 
     const upd_prod = await Product.findByIdAndUpdate(prod_id, {
-      rating: rating,
+      rating: rating.toFixed(1),
     });
 
     res.status(200).json({ message: "review deleted" });
@@ -145,7 +145,7 @@ async function updateReview(req, res) {
       allReviews.reduce((acc, cur) => acc + cur.rating, 0) / allReviews.length;
 
     const upd_prod = await Product.findByIdAndUpdate(prod_id, {
-      rating: rating,
+      rating: rating.toFixed(1),
     });
 
     res.status(200).json({ message: "review updated" });
