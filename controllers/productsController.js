@@ -7,8 +7,8 @@ const {
 
 async function createProduct(req, res) {
   try {
-    const thumbnail = req.files.thumbnail[0].filename;
-    const images = req.files.images.map((item) => item.filename);
+    const thumbnail = req.files.thumbnail[0].path;
+    const images = req.files.images.map((item) => item.path);
 
     const { error, value } = productValidation.validate(req.body);
     if (error) {
