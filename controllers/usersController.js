@@ -95,17 +95,36 @@ async function updateUser(req, res) {
     }
 
     if (user._id.toString() != user_token.id && user_token.role != "ADMIN") {
-      return res
-        .status(403)
-        .json({
-          message: "you do not have the access to update this user data",
-        });
+      return res.status(403).json({
+        message: "you do not have the access to update this user data",
+      });
     }
 
     const { error, value } = updateValidation.validate(req.body);
 
     if (error) {
       return res.status(400).json(error.details[0].message);
+    }
+
+    if (value.password && !value.oldPassword) {
+      return res
+        .status(400)
+        .json({ message: "Please Enter your OLD Password" });
+    }
+
+    if (value.oldPassword && !value.password) {
+      return res
+        .status(400)
+        .json({ message: "Please Eneter new Password you want to update " });
+    }
+
+    const checkPassword = await bcrypt.compare(
+      value.oldPassword,
+      user.password
+    );
+
+    if (!checkPassword) {
+      return res.status(400).json({ message: "Incorrect OLD Password" });
     }
 
     if (value.password) {

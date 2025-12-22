@@ -12,6 +12,7 @@ const userValidation = joi.object({
 const updateValidation = joi.object({
   email: joi.string().email(),
   username: joi.string().min(3),
+  oldPassword: joi.string(),
   password: joi.string().min(8),
   age: joi.number().min(18),
 
