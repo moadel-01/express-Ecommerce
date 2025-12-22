@@ -98,8 +98,7 @@ async function getAllUserOrders(req, res) {
     }
 
     const userOrders = await Order.find(
-      { "customer.customer_id": customer_id },
-      "products totalPrice"
+      { "customer.customer_id": customer_id }
     );
     // console.log(userOrders);
     if (user.role == "USER") {
