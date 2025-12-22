@@ -21,14 +21,14 @@ async function createOrder(req, res) {
         quantity: item.quantity,
       })),
 
-      totalPrice,
+      totalPrice: totalPrice,
     });
 
     res
       .status(200)
       .json({ message: "order created successfully", data: order });
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error", error });
   }
 }
 
@@ -102,17 +102,20 @@ async function getAllUserOrders(req, res) {
       "products totalPrice"
     );
     // console.log(userOrders);
-    if(user.role == "USER"){
-        res
-      .status(200)
-      .json({
+    if (user.role == "USER") {
+      res.status(200).json({
         message: `hey ${user.username}, all your orders`,
         data: userOrders,
       });
     }
 
-    if(user.role == "ADMIN"){
-        res.status(200).json({message: `all ${userReq.username}'s orders`, data: userOrders})
+    if (user.role == "ADMIN") {
+      res
+        .status(200)
+        .json({
+          message: `all ${userReq.username}'s orders`,
+          data: userOrders,
+        });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
