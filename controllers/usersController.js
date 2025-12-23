@@ -106,28 +106,22 @@ async function updateUser(req, res) {
       return res.status(400).json(error.details[0].message);
     }
 
-    if (value.password && !value.oldPassword) {
-      return res
-        .status(400)
-        .json({ message: "Please Enter your OLD Password" });
-    }
+    if (value.password || value.oldPassword) {
+      if (!value.password || !value.oldPassword) {
+        return res.status(400).json({
+          message: "Please enter both old and new password",
+        });
+      }
 
-    if (value.oldPassword && !value.password) {
-      return res
-        .status(400)
-        .json({ message: "Please Eneter new Password you want to update " });
-    }
+      const checkPassword = await bcrypt.compare(
+        value.oldPassword,
+        user.password
+      );
 
-    const checkPassword = await bcrypt.compare(
-      value.oldPassword,
-      user.password
-    );
+      if (!checkPassword) {
+        return res.status(400).json({ message: "Incorrect OLD Password" });
+      }
 
-    if (!checkPassword) {
-      return res.status(400).json({ message: "Incorrect OLD Password" });
-    }
-
-    if (value.password) {
       value.password = await bcrypt.hash(value.password, 10);
     }
 
@@ -135,7 +129,7 @@ async function updateUser(req, res) {
 
     res.status(200).json({ message: "user updated" });
   } catch (error) {
-    res.status(400).json({ message: "Invalid ID", data: error.message });
+    res.status(400).json({ message: error.message });
   }
 }
 
