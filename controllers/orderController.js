@@ -72,7 +72,7 @@ async function getSingleOrder(req, res) {
 
     res.status(200).json({
       message: `your order ( ${id} ) here is order summary: `,
-      data: order.products,
+      data: order,
     });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
