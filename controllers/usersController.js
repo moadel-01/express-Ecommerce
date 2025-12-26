@@ -103,7 +103,7 @@ async function updateUser(req, res) {
     const { error, value } = updateValidation.validate(req.body);
 
     if (error) {
-      return res.status(400).json(error.details[0].message);
+      return res.status(400).json({ error: error.details[0].message });
     }
 
     if (value.password || value.oldPassword) {
