@@ -19,6 +19,7 @@ async function createOrder(req, res) {
         title: item.title,
         price: item.price,
         quantity: item.quantity,
+        thumbnail: item.thumbnail,
       })),
 
       totalPrice: totalPrice,
@@ -97,9 +98,9 @@ async function getAllUserOrders(req, res) {
         .json({ message: "you do not have the access to view these orders" });
     }
 
-    const userOrders = await Order.find(
-      { "customer.customer_id": customer_id }
-    );
+    const userOrders = await Order.find({
+      "customer.customer_id": customer_id,
+    });
     // console.log(userOrders);
     if (user.role == "USER") {
       res.status(200).json({
@@ -109,12 +110,10 @@ async function getAllUserOrders(req, res) {
     }
 
     if (user.role == "ADMIN") {
-      res
-        .status(200)
-        .json({
-          message: `all ${userReq.username}'s orders`,
-          data: userOrders,
-        });
+      res.status(200).json({
+        message: `all ${userReq.username}'s orders`,
+        data: userOrders,
+      });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
