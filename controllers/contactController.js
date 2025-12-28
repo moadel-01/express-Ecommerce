@@ -5,7 +5,7 @@ async function createContactMessage(req, res) {
   const { error, value } = contactValidation.validate(req.body);
 
   if (error) {
-    return res.json({ message: error.details[0].message });
+    return res.status(400).json({ message: error.details[0].message });
   }
 
   try {

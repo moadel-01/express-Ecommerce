@@ -12,7 +12,7 @@ const contactValidation = joi.object({
   message: joi.string().required(),
 
   city: joi.string(),
-  strret: joi.string(),
+  street: joi.string(),
 });
 
 module.exports = { contactValidation };
