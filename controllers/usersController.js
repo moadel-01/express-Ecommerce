@@ -38,14 +38,14 @@ async function createUser(req, res) {
 }
 
 async function getUsers(req, res) {
-  const users = await User.find();
+  const users = await User.find().select("-password");
   res.status(200).json({ message: "all users data", data: users });
 }
 async function getSingleUser(req, res) {
   const { id } = req.params;
 
   try {
-    const singleUser = await User.findById(id);
+    const singleUser = await User.findById(id).select("-password");
     if (!singleUser) {
       return res.status(404).json({ message: "user not found" });
     }
