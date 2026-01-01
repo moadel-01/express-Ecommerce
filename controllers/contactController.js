@@ -75,13 +75,13 @@ async function searchBar(req, res) {
     const skip = (page - 1) * limit;
     const total = await Contact.find(query).countDocuments();
 
-    const users = await Contact.find(query)
+    const messages = await Contact.find(query)
       .skip(skip)
       .limit(limit)
 
     res.status(200).json({
       message: "search results",
-      data: { skip, limit, total, users },
+      data: { skip, limit, total, messages },
     });
   } catch (error) {
     res.status(400).json({ error });
