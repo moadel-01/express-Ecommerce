@@ -54,4 +54,44 @@ async function deleteMessage(req, res) {
   }
 }
 
-module.exports = { createContactMessage, getContactMessages, getSingleMessage, deleteMessage };
+async function searchBar(req, res) {
+  try {
+    const { search, page = 1, limit = 100 } = req.query;
+
+    if (!search) {
+      return res
+        .status(400)
+        .json({ message: "please enter something to search" });
+    }
+
+    const query = {};
+
+    if (search) {
+      query.$or = [
+        { subject: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+    const total = await Contact.find(query).countDocuments();
+
+    const users = await Contact.find(query)
+      .skip(skip)
+      .limit(limit)
+
+    res.status(200).json({
+      message: "search results",
+      data: { skip, limit, total, users },
+    });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+}
+
+module.exports = {
+  createContactMessage,
+  getContactMessages,
+  getSingleMessage,
+  deleteMessage,
+  searchBar,
+};

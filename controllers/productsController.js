@@ -4,6 +4,7 @@ const {
   productValidation,
   updateProductValidation,
 } = require("../validations/productsValidations");
+const mongoose = require("mongoose");
 
 async function createProduct(req, res) {
   try {
@@ -61,7 +62,7 @@ async function getAllProducts(req, res) {
 
 async function searchBar(req, res) {
   try {
-    const { search, page = 1, limit = 10 } = req.query;
+    const { search, page = 1, limit = 30 } = req.query;
 
     if (!search) {
       return res
@@ -76,6 +77,9 @@ async function searchBar(req, res) {
         { title: { $regex: search, $options: "i" } },
         { category: { $regex: search, $options: "i" } },
       ];
+      if (mongoose.Types.ObjectId.isValid(search)) {
+        query.$or.push({ _id: search });
+      }
     }
 
     const skip = (page - 1) * limit;

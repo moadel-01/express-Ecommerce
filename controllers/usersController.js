@@ -6,6 +6,7 @@ const {
 } = require("../validations/usersValidations");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose")
 
 async function createUser(req, res) {
   const { error, value } = userValidation.validate(req.body);
@@ -218,6 +219,42 @@ async function Login(req, res) {
   }
 }
 
+async function searchBar(req, res) {
+  try {
+    const { search, page = 1, limit = 30 } = req.query;
+
+    if (!search) {
+      return res
+        .status(400)
+        .json({ message: "please enter something to search" });
+    }
+
+    const query = {};
+
+    if (search) {
+      query.$or = [
+        { email: { $regex: search, $options: "i" } },
+        { username: { $regex: search, $options: "i" } },
+      ];
+      if (mongoose.Types.ObjectId.isValid(search)) {
+        query.$or.push({ _id: search });
+      }
+    }
+
+    const skip = (page - 1) * limit;
+    const total = await User.find(query).countDocuments();
+
+    const users = await User.find(query).skip(skip).limit(limit).select("-password");
+
+    res.status(200).json({
+      message: "search results",
+      data: { skip, limit, total, users },
+    });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+}
+
 module.exports = {
   createUser,
   getUsers,
@@ -226,4 +263,5 @@ module.exports = {
   updateUser,
   Register,
   Login,
+  searchBar
 };

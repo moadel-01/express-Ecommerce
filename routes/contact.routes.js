@@ -13,6 +13,9 @@ contactRouter.get(
   roleMiddleware("ADMIN"),
   contactController.getContactMessages
 );
+
+contactRouter.get("/search", contactController.searchBar);
+
 contactRouter.get(
   "/:id",
   authMiddleware,

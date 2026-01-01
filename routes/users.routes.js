@@ -18,6 +18,7 @@ usersRouter.get(
   roleMiddleware("ADMIN"),
   usersController.getUsers
 );
+usersRouter.get("/search", usersController.searchBar);
 usersRouter.get("/:id", authMiddleware, usersController.getSingleUser);
 
 usersRouter.delete("/:id", authMiddleware, usersController.deleteUser);

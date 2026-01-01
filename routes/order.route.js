@@ -13,6 +13,7 @@ orderRouter.get(
   roleMiddleware("ADMIN"),
   orderController.getOrders
 );
+orderRouter.get("/search", orderController.searchBar);
 
 orderRouter.get(
   "/:customer_id/orders",

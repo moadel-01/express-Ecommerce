@@ -1,5 +1,6 @@
 const { Order } = require("../models/order");
 const { User } = require("../models/user");
+const mongoose = require("mongoose")
 
 async function createOrder(req, res) {
   try {
@@ -120,4 +121,48 @@ async function getAllUserOrders(req, res) {
   }
 }
 
-module.exports = { createOrder, getOrders, getSingleOrder, getAllUserOrders };
+async function searchBar(req, res) {
+  try {
+    const { search, page = 1, limit = 100 } = req.query;
+
+    if (!search) {
+      return res
+        .status(400)
+        .json({ message: "please enter something to search" });
+    }
+
+    const query = {};
+
+    if (search) {
+      query.$or = [
+        { "customer.email": { $regex: search, $options: "i" } },
+        { "customer.username": { $regex: search, $options: "i" } },
+      ];
+      if (mongoose.Types.ObjectId.isValid(search)) {
+        query.$or.push({ _id: search });
+      }
+    }
+
+    const skip = (page - 1) * limit;
+    const total = await Order.find(query).countDocuments();
+
+    const orders = await Order.find(query)
+      .skip(skip)
+      .limit(limit)
+
+    res.status(200).json({
+      message: "search results",
+      data: { skip, limit, total, orders },
+    });
+  } catch (error) {
+    res.status(400).json({ error });
+  }
+}
+
+module.exports = {
+  createOrder,
+  getOrders,
+  getSingleOrder,
+  getAllUserOrders,
+  searchBar,
+};
