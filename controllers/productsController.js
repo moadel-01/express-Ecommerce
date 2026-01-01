@@ -62,7 +62,7 @@ async function getAllProducts(req, res) {
 
 async function searchBar(req, res) {
   try {
-    const { search, page = 1, limit = 30 } = req.query;
+    const { search } = req.query;
 
     if (!search) {
       return res
@@ -82,14 +82,13 @@ async function searchBar(req, res) {
       }
     }
 
-    const skip = (page - 1) * limit;
     const total = await Product.find(query).countDocuments();
 
-    const products = await Product.find(query).skip(skip).limit(limit);
+    const products = await Product.find(query);
 
     res.status(200).json({
       message: "search results",
-      data: { skip, limit, total, products },
+      data: products,
     });
   } catch (error) {
     res.status(400).json({ error });
