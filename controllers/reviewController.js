@@ -162,9 +162,30 @@ async function updateReview(req, res) {
   }
 }
 
+async function getSingleReview(req, res) {
+  const { prod_id, rev_id } = req.params;
+
+  try {
+    const product = await Product.findById(prod_id);
+    if (!product) {
+      return res.status(404).json({ message: "product not found" });
+    }
+
+    const review = await Review.findById(rev_id);
+    if (!review) {
+      return res.status(404).json({ message: "review not found" });
+    }
+
+    res.status(200).json({ message: "review found", data: review });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 module.exports = {
   createReview,
   getProductAllReviews,
   deleteReview,
   updateReview,
+  getSingleReview,
 };

@@ -11,6 +11,7 @@ reviewRouter.post(
 );
 
 reviewRouter.get("/:prod_id/reviews", reviewController.getProductAllReviews);
+reviewRouter.get("/:prod_id/reviews/:rev_id", reviewController.getSingleReview);
 
 reviewRouter.delete(
   "/:prod_id/reviews/:rev_id",
