@@ -22,8 +22,15 @@ async function createReview(req, res) {
 
     const reviewer = { id: req.user.id, username: req.user.username };
 
+    const product = {
+      prod_id: productExist._id,
+      title: productExist.title,
+      price: productExist.price,
+      thumbnail: productExist.thumbnail,
+    };
+
     const reviewerExist = await Review.findOne({
-      prod_id: prod_id,
+      "product.prod_id": prod_id,
       "reviewer.id": reviewer.id,
     });
 
@@ -31,11 +38,12 @@ async function createReview(req, res) {
       return res.status(403).json({ message: "you already left a review!" });
     }
 
-    const review = { prod_id, ...value, reviewer };
+    const review = { ...value, product, reviewer };
+    console.log(review);
 
     const finReview = await Review.create(review);
 
-    const allReviews = await Review.find({ prod_id });
+    const allReviews = await Review.find({ "product.prod_id": prod_id });
 
     const rating =
       allReviews.reduce((acc, cur) => acc + cur.rating, 0) / allReviews.length;
@@ -62,7 +70,7 @@ async function getProductAllReviews(req, res) {
 
     const prodReviews = await Review.find(
       { prod_id: prod_id },
-      "reviewer comment rating"
+      "reviewer comment rating createdAt"
     );
 
     res
@@ -96,7 +104,7 @@ async function deleteReview(req, res) {
 
     const del_rev = await Review.deleteOne({ _id: rev_id });
 
-    const allReviews = await Review.find({ prod_id });
+    const allReviews = await Review.find({ "product.prod_id": prod_id });
 
     const rating =
       allReviews.reduce((acc, cur) => acc + cur.rating, 0) / allReviews.length;
@@ -139,7 +147,7 @@ async function updateReview(req, res) {
 
     const new_rev = await Review.findByIdAndUpdate(rev_id, value);
 
-    const allReviews = await Review.find({ prod_id });
+    const allReviews = await Review.find({ "product.prod_id": prod_id });
 
     const rating =
       allReviews.reduce((acc, cur) => acc + cur.rating, 0) / allReviews.length;

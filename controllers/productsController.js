@@ -131,7 +131,7 @@ async function getSingleProductWithReviews(req, res) {
 
     const reviews = await Review.find(
       { prod_id: id },
-      "reviewer comment rating"
+      "reviewer comment rating createdAt"
     );
 
     res.status(200).json({ message: "product found", data: product, reviews });

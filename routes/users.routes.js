@@ -19,6 +19,7 @@ usersRouter.get(
   usersController.getUsers
 );
 usersRouter.get("/search", usersController.searchBar);
+usersRouter.get("/:id/Reviews", authMiddleware, usersController.getUserReviews);
 usersRouter.get("/:id", authMiddleware, usersController.getSingleUser);
 
 usersRouter.delete("/:id", authMiddleware, usersController.deleteUser);

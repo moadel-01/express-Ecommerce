@@ -6,7 +6,9 @@ const {
 } = require("../validations/usersValidations");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const { Review } = require("../models/review");
+const { date } = require("joi");
 
 async function createUser(req, res) {
   const { error, value } = userValidation.validate(req.body);
@@ -244,7 +246,10 @@ async function searchBar(req, res) {
     const skip = (page - 1) * limit;
     const total = await User.find(query).countDocuments();
 
-    const users = await User.find(query).skip(skip).limit(limit).select("-password");
+    const users = await User.find(query)
+      .skip(skip)
+      .limit(limit)
+      .select("-password");
 
     res.status(200).json({
       message: "search results",
@@ -252,6 +257,25 @@ async function searchBar(req, res) {
     });
   } catch (error) {
     res.status(400).json({ error });
+  }
+}
+
+async function getUserReviews(req, res) {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id).select("-password");
+    if (!user) {
+      return res.status(400).json({ message: "user not found" });
+    }
+
+    const reviews = await Review.find({ "reviewer.id": id });
+
+    res
+      .status(200)
+      .json({ message: `all ${user.username} Reviews`, data: reviews });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 }
 
@@ -263,5 +287,6 @@ module.exports = {
   updateUser,
   Register,
   Login,
-  searchBar
+  searchBar,
+  getUserReviews,
 };
