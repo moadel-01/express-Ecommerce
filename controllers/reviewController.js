@@ -106,6 +106,11 @@ async function deleteReview(req, res) {
 
     const allReviews = await Review.find({ "product.prod_id": prod_id });
 
+    if (allReviews.length === 0) {
+      await Product.findByIdAndUpdate(prod_id, { rating: 0 });
+      return res.status(200).json({ message: "review deleted" });
+    }
+
     const rating =
       allReviews.reduce((acc, cur) => acc + cur.rating, 0) / allReviews.length;
 
