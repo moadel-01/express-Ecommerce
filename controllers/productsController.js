@@ -130,8 +130,8 @@ async function getSingleProductWithReviews(req, res) {
     }
 
     const reviews = await Review.find(
-      { prod_id: id },
-      "reviewer comment rating createdAt"
+      { "product.prod_id": id },
+      "reviewer comment rating createdAt updatedAt"
     );
 
     res.status(200).json({ message: "product found", data: product, reviews });
@@ -150,7 +150,7 @@ async function deleteProduct(req, res) {
       return res.status(400).json({ message: "product not found" });
     }
 
-    const reviews = await Review.deleteMany({ prod_id: id });
+    const reviews = await Review.deleteMany({ "product.prod_id": id });
 
     res.status(200).json({ message: "product deleted" });
   } catch (error) {

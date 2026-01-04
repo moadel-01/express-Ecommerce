@@ -41,7 +41,7 @@ async function createUser(req, res) {
 }
 
 async function getUsers(req, res) {
-  const users = await User.find().select("-password");
+  const users = await User.find().select("-password").sort({ createdAt: -1 });
   res.status(200).json({ message: "all users data", data: users });
 }
 async function getSingleUser(req, res) {
@@ -269,7 +269,7 @@ async function getUserReviews(req, res) {
       return res.status(400).json({ message: "user not found" });
     }
 
-    const reviews = await Review.find({ "reviewer.id": id });
+    const reviews = await Review.find({ "reviewer.id": id }).sort({ createdAt: -1 });
 
     res
       .status(200)

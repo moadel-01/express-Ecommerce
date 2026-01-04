@@ -1,6 +1,6 @@
 const { Order } = require("../models/order");
 const { User } = require("../models/user");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 async function createOrder(req, res) {
   try {
@@ -36,7 +36,7 @@ async function createOrder(req, res) {
 
 async function getOrders(req, res) {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find().sort({ createdAt: -1 });
 
     res.status(200).json({ message: "all users Orders", data: orders });
   } catch (error) {
@@ -101,7 +101,7 @@ async function getAllUserOrders(req, res) {
 
     const userOrders = await Order.find({
       "customer.customer_id": customer_id,
-    });
+    }).sort({ createdAt: -1 });
     // console.log(userOrders);
     if (user.role == "USER") {
       res.status(200).json({
@@ -146,9 +146,7 @@ async function searchBar(req, res) {
     const skip = (page - 1) * limit;
     const total = await Order.find(query).countDocuments();
 
-    const orders = await Order.find(query)
-      .skip(skip)
-      .limit(limit)
+    const orders = await Order.find(query).skip(skip).limit(limit);
 
     res.status(200).json({
       message: "search results",

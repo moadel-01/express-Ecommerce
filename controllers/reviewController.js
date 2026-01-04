@@ -69,8 +69,8 @@ async function getProductAllReviews(req, res) {
     }
 
     const prodReviews = await Review.find(
-      { prod_id: prod_id },
-      "reviewer comment rating createdAt"
+      { "product.prod_id": prod_id },
+      "reviewer comment rating createdAt updatedAt"
     );
 
     res
