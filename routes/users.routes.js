@@ -5,18 +5,13 @@ const roleMiddleware = require("../middlewares/roleMiddleware");
 
 const usersRouter = express.Router();
 
-usersRouter.post(
-  "/createUser",
-  authMiddleware,
-  roleMiddleware("ADMIN"),
-  usersController.createUser
-);
+usersRouter.post("/createUser", usersController.createUser); 
 
 usersRouter.get(
   "/",
   authMiddleware,
   roleMiddleware("ADMIN"),
-  usersController.getUsers
+  usersController.getUsers,
 );
 usersRouter.get("/search", usersController.searchBar);
 usersRouter.get("/:id/Reviews", authMiddleware, usersController.getUserReviews);
