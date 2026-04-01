@@ -19,7 +19,7 @@ app.use(cors({origin: "*"}));
 app.use(express.json());
 
 app.get("/", (req,res)=> {
-  res.send("Hello")
+  res.send("Hello form app")
 })
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
